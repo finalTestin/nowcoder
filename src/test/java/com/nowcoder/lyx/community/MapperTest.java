@@ -2,6 +2,7 @@ package com.nowcoder.lyx.community;
 
 import com.nowcoder.lyx.community.dao.DiscussPostMapper;
 import com.nowcoder.lyx.community.dao.LoginTicketMapper;
+import com.nowcoder.lyx.community.dao.MessageMapper;
 import com.nowcoder.lyx.community.dao.UserMapper;
 import com.nowcoder.lyx.community.entity.DiscussPost;
 import com.nowcoder.lyx.community.entity.LoginTicket;
@@ -27,6 +28,8 @@ public class MapperTest {
     private DiscussPostMapper discussPostMapper;
     @Autowired
     private LoginTicketMapper loginTicketMapper;
+    @Autowired
+    private MessageMapper messageMapper;
     @Test
     public void testSelectUser(){
         User user = userMapper.selectById(101);
@@ -42,7 +45,7 @@ public class MapperTest {
         System.out.println(discussPostMapper.selectDiscussPostRows(0));
     }
     @Test
-    public void testInsertLoginTicket(){
+    public void testInsertLoginTicket() {
         LoginTicket loginTicket = new LoginTicket();
         loginTicket.setUserId(101);
         loginTicket.setTicket("test");
