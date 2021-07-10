@@ -1,0 +1,11 @@
+${KAFKA_DIR} = G:\kafka_2.12-2.2.0\kafka_2.12-2.2.0
+.\bin\windows\zookeeper-server-start.bat .\config\zookeeper.properties
+
+.\bin\windows\kafka-server-start.bat .\config\server.properties
+
+# 创建主题
+.\bin\windows\kafka-topics.bat --create --bootstrap-server localhost:9092 --replication-factor 1 --partitions 1 --topic test
+# 向主题发送消息
+.\bin\windows\kafka-console-producer.bat --broker-list localhost:9092 --topic test
+# 从主题接收消息
+.\bin\windows\kafka-console-consumer.bat --bootstrap-server localhost:9092 --topic test --from-beginning

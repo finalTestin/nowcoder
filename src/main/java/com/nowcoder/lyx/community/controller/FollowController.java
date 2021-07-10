@@ -1,13 +1,15 @@
 package com.nowcoder.lyx.community.controller;
 
+import com.nowcoder.lyx.community.entity.Event;
 import com.nowcoder.lyx.community.entity.Page;
 import com.nowcoder.lyx.community.entity.User;
+import com.nowcoder.lyx.community.event.EventProducer;
 import com.nowcoder.lyx.community.service.FollowService;
 import com.nowcoder.lyx.community.service.UserService;
 import com.nowcoder.lyx.community.util.CommunityConstant;
 import com.nowcoder.lyx.community.util.CommunityUtil;
 import com.nowcoder.lyx.community.util.HostHolder;
-import org.hibernate.validator.constraints.pl.REGON;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -16,7 +18,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import javax.jws.soap.SOAPBinding;
+
 import java.util.List;
 import java.util.Map;
 
@@ -28,12 +30,23 @@ public class FollowController implements CommunityConstant {
     HostHolder hostHolder;
     @Autowired
     UserService userService;
+    @Autowired
+    private EventProducer eventProducer;
 
     @RequestMapping(path = "/follow", method = RequestMethod.POST)
     @ResponseBody
     public String follow(int entityType, int entityId){
         User user = hostHolder.getUser();
         followService.follow(user.getId(), entityType, entityId);
+
+        // 触发关注事件
+        Event event = new Event()
+                .setTopic(TOPIC_FOLLOW)
+                .setUserId(hostHolder.getUser().getId())
+                .setEntityType(entityType)
+                .setEntityId(entityId)
+                .setEntityUserId(entityId);
+        eventProducer.fireEvent(event);
 
         return CommunityUtil.getJSONString(0, "已关注!");
     }
